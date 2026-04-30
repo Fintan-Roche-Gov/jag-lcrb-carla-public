@@ -42,7 +42,7 @@ namespace Gov.Lclb.Cllb.FederalReportingService
             _logger = loggerFactory.CreateLogger(typeof(FederalReportingController));
         }
 
-        public async Task ExportFederalReports(PerformContext hangfireContext)
+        public async Task ExportFederalReports()
         {
             try
             {
@@ -62,7 +62,7 @@ namespace Gov.Lclb.Cllb.FederalReportingService
 
                     var dynamicsMonthlyReports = _dynamicsClient.Cannabismonthlyreports.Get(filter: filter);
                     List<FederalReportingMonthlyExport> monthlyReports = new List<FederalReportingMonthlyExport>();
-                    hangfireContext.WriteLine($"Found {dynamicsMonthlyReports.Value.Count} monthly reports to export.");
+                    //hangfireContext.WriteLine($"Found {dynamicsMonthlyReports.Value.Count} monthly reports to export.");
                     _logger.LogInformation($"Found {dynamicsMonthlyReports.Value.Count} monthly reports to export.");
                     foreach (MicrosoftDynamicsCRMadoxioCannabismonthlyreport report in dynamicsMonthlyReports.Value)
                     {
@@ -150,11 +150,11 @@ namespace Gov.Lclb.Cllb.FederalReportingService
                             }
                             else
                             {
-                                hangfireContext.WriteLine($"Failed to create sharepoint folder for federal report.");
+                                //hangfireContext.WriteLine($"Failed to create sharepoint folder for federal report.");
                                 _logger.LogInformation($"Failed to create sharepoint folder for federal report.");
                             }
                         }
-                        hangfireContext.WriteLine($"Successfully exported Federal Reporting CSV {export.AdoxioExportnumber}.");
+                       // hangfireContext.WriteLine($"Successfully exported Federal Reporting CSV {export.AdoxioExportnumber}.");
                         _logger.LogInformation($"Successfully exported Federal Reporting CSV {export.AdoxioExportnumber}.");
                     }
                     patchExport.AdoxioExportcompleted = DateTime.UtcNow;
@@ -163,7 +163,7 @@ namespace Gov.Lclb.Cllb.FederalReportingService
             }
             catch (HttpOperationException httpOperationException)
             {
-                hangfireContext.WriteLine("Error creating federal tracking CSV");
+                //hangfireContext.WriteLine("Error creating federal tracking CSV");
                 _logger.LogError(httpOperationException, "Error creating federal tracking CSV");
             }
         }
@@ -239,7 +239,7 @@ namespace Gov.Lclb.Cllb.FederalReportingService
             string result = null;
             string sanitized = relativeUrl.Replace("'", "''");
             // first see if one exists.
-            var locations = _dynamicsClient.Sharepointdocumentlocations.Get(filter: "relativeurl eq '" + sanitized + "'");
+            var locations = _dynamicsClient.Sharepointdocumentlocations.Get(filter: "relativeurl eq '" + sanitized + "' && name eq 'Federal Report Export'");
 
             var location = locations.Value.FirstOrDefault();
 
